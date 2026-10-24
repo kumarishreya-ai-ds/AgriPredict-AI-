@@ -56,11 +56,8 @@ def load_model():
     return joblib.load(MODEL_PATH)
 # --------------------------------------------------
 # 3. VALIDATE MODEL FEATURES
-# --------------------------------------------------
-
-model_features = list(
-    getattr(model, "feature_names_in_", FEATURES)
-)
+# ------------------------------------------------
+model_features = list(FEATURES)
 
 if set(model_features) != set(FEATURES):
     st.error(
@@ -69,6 +66,7 @@ if set(model_features) != set(FEATURES):
     )
     st.stop()
 
+df = load_dataset()
 if not df.empty:
     missing_columns = [
         column for column in FEATURES
