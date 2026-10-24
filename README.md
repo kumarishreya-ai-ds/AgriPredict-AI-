@@ -107,3 +107,7 @@ GitHub: [@kumarishreya-ai-ds](https://github.com/kumarishreya-ai-ds)
 ## 📄 License
 
 This project is released under the MIT License. See [`LICENSE`](LICENSE).
+
+## 🚀 Live Demo
+
+[Open AgriPredict AI Dashboard](https://agripredict-ai-epvzhidqy38s4lsuynzu5r.streamlit.app/)
