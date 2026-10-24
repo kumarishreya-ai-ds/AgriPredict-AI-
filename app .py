@@ -7,9 +7,8 @@ import urllib.request
 import joblib
 import streamlit as st
 import huggingface_hub import hf_hub_download 
-# --------------------------------------------------
-# 1. APP CONFIGURATION
-# --------------------------------------------------
+
+
 st.set_page_config(
     page_title="AgriPredict AI",
     page_icon="🌾",
@@ -30,9 +29,7 @@ FEATURES = [
     "Fertilizer",
     "Pesticide"
 ]
-# --------------------------------------------------
-# 2. LOAD MODEL AND DATA
-# --------------------------------------------------
+
 @st.cache_resource
 def load_model():
     model_path = hf_hub_download(
@@ -41,21 +38,27 @@ def load_model():
     )
     return joblib.load(model_path)
 
-model = load_model()
-# --------------------------------------------------
-# LOAD MODEL FROM THE GITHUB PROJECT FOLDER 
-# --------------------------------------------------
 @st.cache_data
-def load_data():
-    if os.path.exists(DATA_PATH):
-        return pd.read_csv(DATA_PATH)
+def load_dataset():
+    dataset_path = os.path.join(
+        os.path.dirname(__file__),
+        "crop_yield.csv"
+    )
+
+    if os.path.exists(dataset_path):
+        return pd.read_csv(dataset_path)
+
     return pd.DataFrame()
+try:
+    model = load_model()
+except Exception as error:
+    st.error("Model load nahi ho pa raha.")
+    st.exception(error)
+    st.stop()
 
-df = load_data()
 
-# --------------------------------------------------
-# 3. VALIDATE MODEL FEATURES
-# --------------------------------------------------
+df = load_dataset()
+
 
 model_features = list(
     getattr(model, "feature_names_in_", FEATURES)
@@ -68,6 +71,7 @@ if set(model_features) != set(FEATURES):
     )
     st.stop()
 
+
 if not df.empty:
     missing_columns = [
         column for column in FEATURES
@@ -79,7 +83,6 @@ if not df.empty:
             f"Dataset is missing columns: {missing_columns}"
         )
         st.stop()
-
 # --------------------------------------------------
 # 4. HELPER FUNCTIONS
 # --------------------------------------------------
