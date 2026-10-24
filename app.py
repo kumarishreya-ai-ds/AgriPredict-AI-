@@ -58,7 +58,9 @@ def load_model():
 # 3. VALIDATE MODEL FEATURES
 # --------------------------------------------------
 
-model_features = list(FEATURES)
+model_features = list(
+    getattr(model, "feature_names_in_", FEATURES)
+)
 
 if set(model_features) != set(FEATURES):
     st.error(
