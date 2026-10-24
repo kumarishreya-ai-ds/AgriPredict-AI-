@@ -3,14 +3,13 @@ import joblib
 import numpy as np
 import pandas as pd
 import streamlit as st
-import os
 import urllib.request
 import joblib
 import streamlit as st
+import huggingface_hub import hf_hub_download 
 # --------------------------------------------------
 # 1. APP CONFIGURATION
 # --------------------------------------------------
-
 st.set_page_config(
     page_title="AgriPredict AI",
     page_icon="🌾",
@@ -18,8 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-BASE_DIR = "/content"
-MODEL_PATH = os.path.join(BASE_DIR, "agripredict_model.pkl")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(BASE_DIR, "crop_yield.csv")
 
 FEATURES = [
@@ -32,28 +30,29 @@ FEATURES = [
     "Fertilizer",
     "Pesticide"
 ]
-
 # --------------------------------------------------
 # 2. LOAD MODEL AND DATA
 # --------------------------------------------------
-from huggingface_hub import hf_hub_download
-import joblib
-
-model_path = hf_hub_download(
-    repo_id="kShreya06/agripredict-model",
-    filename="agripredict_model.pkl"
-)
-
-model = joblib.load(model_path)
 @st.cache_resource
 def load_model():
-    if not os.path.exists(MODEL_PATH):
-        urllib.request.urlretrieve(
-            MODEL_URL,
-            MODEL_PATH
-        )
+    model_path = hf_hub_download(
+        repo_id="kShreya06/agripredict-model",
+        filename="agripredict_model.pkl"
+    )
+    return joblib.load(model_path)
 
-    return joblib.load(MODEL_PATH)
+model = load_model()
+# --------------------------------------------------
+# LOAD MODEL FROM THE GITHUB PROJECT FOLDER 
+# --------------------------------------------------
+@st.cache_data
+def load_data():
+    if os.path.exists(DATA_PATH):
+        return pd.read_csv(DATA_PATH)
+    return pd.DataFrame()
+
+df = load_data()
+
 # --------------------------------------------------
 # 3. VALIDATE MODEL FEATURES
 # --------------------------------------------------
