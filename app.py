@@ -16,10 +16,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-BASE_DIR = "/content"
-MODEL_PATH = os.path.join(BASE_DIR, "agripredict_model.pkl")
-DATA_PATH = os.path.join(BASE_DIR, "crop_yield.csv")
+BASE_DIR = Path(__file__).resolve().parent
 
+MODEL_PATH = BASE_DIR / "agripredict_model.pkl"
+DATA_PATH = BASE_DIR / "crop_yield.csv"
 FEATURES = [
     "Crop",
     "Crop_Year",
@@ -34,30 +34,26 @@ FEATURES = [
 # --------------------------------------------------
 # 2. LOAD MODEL AND DATA
 # --------------------------------------------------
-
 @st.cache_resource
 def load_model():
-    if not os.path.exists(MODEL_PATH):
+    if not MODEL_PATH.exists():
+        file_id = "https://drive.google.com/file/d/17JHjyJefayFDgOFOisWgAI1mxbF2Ic94/view?usp=sharing"
+
+        url = f"https://drive.google.com/uc?id={file_id}"
+
+        with st.spinner("AI model download ho raha hai..."):
+            gdown.download(
+                url,
+                str(MODEL_PATH),
+                quiet=False
+            )
+
+    if not MODEL_PATH.exists() or MODEL_PATH.stat().st_size == 0:
         raise FileNotFoundError(
-            f"Model file not found: {MODEL_PATH}"
+            "Model download nahi hua. Google Drive sharing aur FILE_ID check karo."
         )
+
     return joblib.load(MODEL_PATH)
-
-
-@st.cache_data
-def load_dataset():
-    if not os.path.exists(DATA_PATH):
-        return pd.DataFrame()
-    return pd.read_csv(DATA_PATH)
-
-
-try:
-    model = load_model()
-    df = load_dataset()
-except Exception as error:
-    st.error(f"Unable to load project files: {error}")
-    st.stop()
-
 # --------------------------------------------------
 # 3. VALIDATE MODEL FEATURES
 # --------------------------------------------------
