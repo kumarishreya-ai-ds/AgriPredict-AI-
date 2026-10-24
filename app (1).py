@@ -36,14 +36,15 @@ FEATURES = [
 # --------------------------------------------------
 # 2. LOAD MODEL AND DATA
 # --------------------------------------------------
-MODEL_URL = (
-    "https://huggingface.co/kShreya06/agripredict-model/tree/main"
-    "resolve/main/agripredict_model.pkl"
+from huggingface_hub import hf_hub_download
+import joblib
+
+model_path = hf_hub_download(
+    repo_id="https://huggingface.co/kShreya06/agripredict-model/blob/main/agripredict_model.pkl",
+    filename="agripredict_model.pkl"
 )
 
-MODEL_PATH = "/tmp/agripredict_model.pkl"
-
-
+model = joblib.load(model_path)
 @st.cache_resource
 def load_model():
     if not os.path.exists(MODEL_PATH):
