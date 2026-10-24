@@ -40,7 +40,7 @@ from huggingface_hub import hf_hub_download
 import joblib
 
 model_path = hf_hub_download(
-    repo_id="https://huggingface.co/kShreya06/agripredict-model/blob/main/agripredict_model.pkl",
+    repo_id="kShreya06/agripredict-model",
     filename="agripredict_model.pkl"
 )
 
