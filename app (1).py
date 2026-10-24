@@ -3,7 +3,10 @@ import joblib
 import numpy as np
 import pandas as pd
 import streamlit as st
-
+import os
+import urllib.request
+import joblib
+import streamlit as st
 # --------------------------------------------------
 # 1. APP CONFIGURATION
 # --------------------------------------------------
@@ -33,30 +36,23 @@ FEATURES = [
 # --------------------------------------------------
 # 2. LOAD MODEL AND DATA
 # --------------------------------------------------
+MODEL_URL = (
+    "https://huggingface.co/kShreya06/agripredict-model/tree/main"
+    "resolve/main/agripredict_model.pkl"
+)
+
+MODEL_PATH = "/tmp/agripredict_model.pkl"
+
 
 @st.cache_resource
 def load_model():
     if not os.path.exists(MODEL_PATH):
-        raise FileNotFoundError(
-            f"Model file not found: {MODEL_PATH}"
+        urllib.request.urlretrieve(
+            MODEL_URL,
+            MODEL_PATH
         )
+
     return joblib.load(MODEL_PATH)
-
-
-@st.cache_data
-def load_dataset():
-    if not os.path.exists(DATA_PATH):
-        return pd.DataFrame()
-    return pd.read_csv(DATA_PATH)
-
-
-try:
-    model = load_model()
-    df = load_dataset()
-except Exception as error:
-    st.error(f"Unable to load project files: {error}")
-    st.stop()
-
 # --------------------------------------------------
 # 3. VALIDATE MODEL FEATURES
 # --------------------------------------------------
