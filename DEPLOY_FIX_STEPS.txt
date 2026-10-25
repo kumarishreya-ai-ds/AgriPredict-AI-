@@ -1,0 +1,29 @@
+AgriPredict AI — Deployment Repair
+
+1. Open the GitHub repository:
+   https://github.com/kumarishreya-ai-ds/AgriPredict-AI-
+
+2. Select branch "main". At the repository ROOT (not inside a folder), ensure the exact filenames:
+   app.py
+   requirements.txt
+   crop_yield.csv
+
+3. If the current file is named "app .py", "App.py", or is inside a folder, upload the supplied app.py to the repository root.
+   The filename must be exactly lowercase: app.py
+
+4. Replace the root requirements.txt with the supplied requirements.txt.
+
+5. Commit the changes to branch main.
+
+6. In Streamlit Community Cloud > your app > Settings:
+   Repository: kumarishreya-ai-ds/AgriPredict-AI-
+   Branch: main
+   Main file path: app.py
+
+7. Save settings, then Reboot the app.
+
+8. If it still fails, open Streamlit Logs. The current log only proves app.py is missing at the configured path.
+   After that is fixed, a new error may reveal a separate model or dependency problem.
+
+Note: This app downloads agripredict_model.pkl from the Hugging Face repo configured inside app.py.
+Do not upload private tokens or secrets into GitHub.
